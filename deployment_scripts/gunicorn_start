@@ -2,18 +2,18 @@
 
 NAME="smartalarm"                                                   # Name of the application
 DJANGODIR=/home/django/smartalarm-api/smartalarm                    # Django project directory
-SOCKFILE=/home/django/smartalarm-api/smartalarmrun/gunicorn.sock    # we will communicte using this unix socket
+SOCKFILE=/home/django/smartalarm-api/smartalarm/run/gunicorn.sock    # we will communicte using this unix socket
 USER=django                                                         # the user to run as
 GROUP=django                                                        # the group to run as
 NUM_WORKERS=3                                                       # how many worker processes should Gunicorn spawn
-DJANGO_SETTINGS_MODULE=mass.settings                                # which settings file should Django use
-DJANGO_WSGI_MODULE=mass.wsgi                                        # WSGI module name
+DJANGO_SETTINGS_MODULE=smartalarm.settings                                # which settings file should Django use
+DJANGO_WSGI_MODULE=smartalarm.wsgi                                        # WSGI module name
 
 echo "Starting $NAME as `whoami`"
 
 # Activate the virtual environment
 cd $DJANGODIR
-source ../venv/bin/activate
+source ../../venv/bin/activate
 export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
 export PYTHONPATH=$DJANGODIR:$PYTHONPATH
 
