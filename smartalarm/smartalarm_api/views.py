@@ -2,17 +2,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from models import Tracker, TrackerStat, TrackerEvent
+from serializers import TrackerStatSerializer
 
 
 class DataGatewayView(APIView):
     def get(self, request, format=None):
 
-        return Response(
-            {
-                'message': 'Test!'
-            },
-            status=status.HTTP_200_OK
-        )
+        latest_status = TrackerStat.objects.order_by('-update_time')[0]
+
+        serializer = TrackerStatSerializer(latest_status, many=False)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
         data_received = request.data
