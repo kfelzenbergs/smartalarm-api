@@ -1,0 +1,8 @@
+Django==1.10.5
+django-filter==1.0.1
+djangorestframework==3.5.3
+django-cors-headers==2.0.0
+gunicorn==19.6.0
+Markdown==2.6.7
+psycopg2==2.6.2
+supervisor==3.3.1
