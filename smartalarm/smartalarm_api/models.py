@@ -31,6 +31,8 @@ class TrackerEvent(models.Model):
         ('position_changed', 'Position changed'),
         ('main_power_disconnected', 'Main power disconnected'),
         ('main_power_connected', 'Main power connected'),
+        ('device_armed', 'Device armed'),
+        ('device_disarmed', 'Device disarmed'),
     )
 
     event_type = models.CharField(max_length=100, default='unknown', choices=event_choices)

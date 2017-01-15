@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from rest_framework.serializers import SerializerMethodField
-from models import TrackerStat
+from models import TrackerStat, TrackerEvent
 
 
 class TrackerStatSerializer(serializers.ModelSerializer):
@@ -11,5 +10,15 @@ class TrackerStatSerializer(serializers.ModelSerializer):
             'lon',
             'satellites',
             'bat_level',
-            'is_charging'
+            'is_charging',
+            'update_time'
+        ]
+
+
+class TrackerEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TrackerEvent
+        fields = [
+            'event_type',
+            'update_time'
         ]
