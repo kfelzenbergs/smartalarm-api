@@ -6,7 +6,7 @@ import uuid
 
 class Tracker(models.Model):
     identity = models.UUIDField(default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=256, null=False, primary_key=True)
+    name = models.CharField(max_length=256, null=False)
     description = models.TextField(max_length=500, blank=True)
 
     def __unicode__(self):
