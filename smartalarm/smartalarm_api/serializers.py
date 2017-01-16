@@ -22,3 +22,12 @@ class TrackerEventSerializer(serializers.ModelSerializer):
             'event_type',
             'update_time'
         ]
+
+
+class TrackeHistoricrStatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TrackerStat
+        fields = [
+            'lat',
+            'lon',
+        ]

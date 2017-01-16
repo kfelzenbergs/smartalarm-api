@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from smartalarm_api.views import StatsGatewayView, EventGatewayView
+from smartalarm_api.views import StatsGatewayView, EventGatewayView, StatsHistoryGatewayView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^stats_gateway/$', StatsGatewayView.as_view()),
     url(r'^event_gateway/$', EventGatewayView.as_view()),
+    url(r'^stats_history_gateway/$', StatsHistoryGatewayView.as_view()),
 ]
