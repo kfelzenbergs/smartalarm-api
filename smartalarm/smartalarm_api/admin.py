@@ -9,7 +9,7 @@ class TrackerAdmin(admin.ModelAdmin):
 
 @admin.register(TrackerStat)
 class TrackerStatsAdmin(admin.ModelAdmin):
-    list_display = ('tracker', 'lat', 'lon', 'satellites', 'bat_level', 'is_charging', 'update_time')
+    list_display = ('tracker', 'lat', 'lon', 'satellites', 'speed', 'bat_level', 'is_charging', 'update_time')
     list_filter = (
         ('satellites', admin.AllValuesFieldListFilter),
         ('bat_level', admin.AllValuesFieldListFilter),

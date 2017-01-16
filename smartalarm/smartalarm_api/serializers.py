@@ -9,6 +9,7 @@ class TrackerStatSerializer(serializers.ModelSerializer):
             'lat',
             'lon',
             'satellites',
+            'speed',
             'bat_level',
             'is_charging',
             'update_time'
