@@ -22,22 +22,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'we0f9$-lf+(-_42i^a5oewdr9(itxg$2g2dxesfeaq39*$jide'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['localhost']
-
-CORS_ORIGIN_WHITELIST = (
-    'localhost:8001',
-    'localhost'
-)
-
-CORS_ALLOW_METHODS = (
-    'GET',
-)
-
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -82,17 +66,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'smartalarm.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 
 # Password validation
