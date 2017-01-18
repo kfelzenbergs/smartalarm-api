@@ -42,13 +42,13 @@ class TrackerStatSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_asset_name(obj):
-        asset = Asset.objects.filter(tracker=obj.id)[0]
+        asset = Asset.objects.filter(tracker=obj.tracker)[0]
 
         return asset.name
 
     @staticmethod
     def get_asset_reg_nr(obj):
-        asset = Asset.objects.filter(tracker=obj.id)[0]
+        asset = Asset.objects.filter(tracker=obj.tracker)[0]
 
         return asset.reg_number
 
