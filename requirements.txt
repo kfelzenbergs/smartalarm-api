@@ -7,3 +7,4 @@ Markdown==2.6.7
 psycopg2==2.6.2
 supervisor==3.3.1
 pytz==2016.10
+geopy-1.11.0

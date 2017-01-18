@@ -13,6 +13,12 @@ class Tracker(models.Model):
         return self.name
 
 
+class Asset(models.Model):
+    tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, related_name='tracker_asset')
+    name = models.CharField(max_length=256, null=False)
+    reg_number = models.CharField(max_length=256, null=False)
+
+
 class TrackerStat(models.Model):
     tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, related_name='tracker_stats')
     update_time = models.DateTimeField(auto_now=True)

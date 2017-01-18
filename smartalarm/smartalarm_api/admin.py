@@ -1,5 +1,11 @@
 from django.contrib import admin
-from .models import Tracker, TrackerStat, TrackerEvent
+from .models import Tracker, TrackerStat, TrackerEvent, Asset
+
+
+@admin.register(Asset)
+class AssetAdmin(admin.ModelAdmin):
+    list_display = ('name', 'reg_number', 'tracker')
+
 
 @admin.register(Tracker)
 class TrackerAdmin(admin.ModelAdmin):
@@ -9,7 +15,7 @@ class TrackerAdmin(admin.ModelAdmin):
 
 @admin.register(TrackerStat)
 class TrackerStatsAdmin(admin.ModelAdmin):
-    list_display = ('tracker', 'lat', 'lon', 'satellites', 'speed', 'bat_level', 'is_charging', 'update_time')
+    list_display = ('tracker', 'lat', 'lon', 'alt', 'satellites', 'speed', 'bat_level', 'is_charging', 'update_time')
     list_filter = (
         ('satellites', admin.AllValuesFieldListFilter),
         ('bat_level', admin.AllValuesFieldListFilter),
@@ -18,6 +24,7 @@ class TrackerStatsAdmin(admin.ModelAdmin):
 
     search_fields = ['tracker', 'event_type']
     ordering = ("-update_time",)
+
 
 @admin.register(TrackerEvent)
 class TrackerEventsAdmin(admin.ModelAdmin):

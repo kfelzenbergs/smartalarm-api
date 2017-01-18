@@ -2,9 +2,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from models import Tracker, TrackerStat, TrackerEvent
-from serializers import TrackerStatSerializer, TrackeHistoricrStatSerializer
+from serializers import TrackerStatSerializer, TrackerHistoricStatSerializer
 from datetime import datetime, timedelta
 from django.utils.timezone import get_current_timezone
+from django.utils import timezone
 
 
 class StatsGatewayView(APIView):
@@ -40,8 +41,8 @@ class StatsGatewayView(APIView):
 class StatsHistoryGatewayView(APIView):
     def get(self, request, format=None):
 
-        filter_from = request.GET.get('from', datetime.now() - timedelta(days=1))
-        filter_to = request.GET.get('to', datetime.now())
+        filter_from = request.GET.get('from', timezone.now() - timedelta(days=1))
+        filter_to = request.GET.get('to', timezone.now())
 
         if isinstance(filter_from, basestring) and isinstance(filter_to, basestring):
             tz = get_current_timezone()
@@ -49,7 +50,7 @@ class StatsHistoryGatewayView(APIView):
             filter_to = tz.localize(datetime.strptime(filter_to, '%Y-%m-%d')).replace(hour=23, minute=59)
 
         historic_stats = TrackerStat.objects.filter(update_time__range=(filter_from, filter_to)).order_by('update_time')
-        serializer = TrackeHistoricrStatSerializer(historic_stats, many=True)
+        serializer = TrackerHistoricStatSerializer(historic_stats, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
