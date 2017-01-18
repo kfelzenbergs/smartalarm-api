@@ -8,6 +8,7 @@ class TrackerStatSerializer(serializers.ModelSerializer):
         fields = [
             'lat',
             'lon',
+            'alt',
             'satellites',
             'speed',
             'bat_level',

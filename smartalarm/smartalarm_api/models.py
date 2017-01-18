@@ -18,6 +18,7 @@ class TrackerStat(models.Model):
     update_time = models.DateTimeField(auto_now=True)
     lat = models.FloatField(default=0)
     lon = models.FloatField(default=0)
+    alt = models.FloatField(default=0)
     satellites = models.IntegerField(default=0)
     speed = models.IntegerField(default=0)
     bat_level = models.IntegerField(default=0)
