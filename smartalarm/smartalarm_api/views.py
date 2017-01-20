@@ -26,7 +26,7 @@ class StatsGatewayView(APIView):
             lat=data_received.get('lat'),
             lon=data_received.get('lon'),
             alt=data_received.get('alt'),
-            speed=data_received('speed'),
+            speed=data_received.get('speed'),
             satellites=data_received.get('satelites'),
             bat_level=data_received.get('bat_level'),
             is_charging=data_received.get('is_charging')
