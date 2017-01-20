@@ -26,6 +26,7 @@ class StatsGatewayView(APIView):
             lat=data_received.get('lat'),
             lon=data_received.get('lon'),
             alt=data_received.get('alt'),
+            speed=data_received('speed'),
             satellites=data_received.get('satelites'),
             bat_level=data_received.get('bat_level'),
             is_charging=data_received.get('is_charging')
@@ -49,7 +50,10 @@ class StatsHistoryGatewayView(APIView):
             filter_from = tz.localize(datetime.strptime(filter_from, '%Y-%m-%d'))
             filter_to = tz.localize(datetime.strptime(filter_to, '%Y-%m-%d')).replace(hour=23, minute=59)
 
-        historic_stats = TrackerStat.objects.filter(update_time__range=(filter_from, filter_to)).order_by('update_time')
+        historic_stats = TrackerStat.objects.filter(
+            update_time__range=(filter_from, filter_to),
+            satellites__gte=3
+        ).order_by('update_time')
         serializer = TrackerHistoricStatSerializer(historic_stats, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
