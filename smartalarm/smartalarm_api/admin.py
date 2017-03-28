@@ -9,8 +9,8 @@ class AssetAdmin(admin.ModelAdmin):
 
 @admin.register(Tracker)
 class TrackerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'identity')
-    search_fields = ['name']
+    list_display = ('name', 'identity', 'imei')
+    search_fields = ['name', 'imei']
 
 
 @admin.register(TrackerStat)

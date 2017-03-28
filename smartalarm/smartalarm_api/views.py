@@ -6,6 +6,7 @@ from serializers import TrackerStatSerializer, TrackerHistoricStatSerializer
 from datetime import datetime, timedelta
 from django.utils.timezone import get_current_timezone
 from django.utils import timezone
+from django.db.models import Q
 
 
 class StatsGatewayView(APIView):
@@ -21,22 +22,32 @@ class StatsGatewayView(APIView):
         data_received = request.data
         print "received:", data_received
 
-        stats_entry = TrackerStat(
-            tracker=Tracker.objects.get(identity=data_received.get('identity')),
-            lat=data_received.get('lat'),
-            lon=data_received.get('lon'),
-            alt=data_received.get('alt'),
-            speed=data_received.get('speed'),
-            satellites=data_received.get('satelites'),
-            bat_level=data_received.get('bat_level'),
-            is_charging=data_received.get('is_charging')
-        )
+        try:
+            stats_entry = TrackerStat(
+                tracker=Tracker.objects.get(
+                    Q(identity=data_received.get('identity', None)) | Q(imei=data_received.get('imei', None))
+                ),
+                lat=data_received.get('lat'),
+                lon=data_received.get('lon'),
+                alt=data_received.get('alt'),
+                speed=data_received.get('speed'),
+                satellites=data_received.get('satelites'),
+                bat_level=data_received.get('bat_level'),
+                is_charging=data_received.get('is_charging')
+            )
 
-        stats_entry.save()
+            stats_entry.save()
 
-        return Response(
-            status=status.HTTP_200_OK
-        )
+            return Response(
+                status=status.HTTP_200_OK
+            )
+
+        except Exception as e:
+            print e
+
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class StatsHistoryGatewayView(APIView):

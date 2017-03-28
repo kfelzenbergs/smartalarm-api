@@ -6,6 +6,7 @@ import uuid
 
 class Tracker(models.Model):
     identity = models.UUIDField(default=uuid.uuid4, editable=False)
+    imei = models.CharField(max_length=256, null=True)
     name = models.CharField(max_length=256, null=False)
     description = models.TextField(max_length=500, blank=True)
 
