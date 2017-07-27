@@ -1,18 +1,42 @@
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from models import Tracker, TrackerStat, TrackerEvent
-from serializers import TrackerStatSerializer, TrackerHistoricStatSerializer
+from smartalarm_api.models import Tracker, TrackerStat, TrackerEvent
+from smartalarm_api.serializers import TrackerSerializer, TrackerStatSerializer, TrackerHistoricStatSerializer, TrackerEventSerializer
 from datetime import datetime, timedelta
 from django.utils.timezone import get_current_timezone
 from django.utils import timezone
 from django.db.models import Q
 
 
+class TrackersView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = Tracker.objects.all()
+    serializer_class = TrackerSerializer
+
+
 class StatsGatewayView(APIView):
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [IsAuthenticated()]
+
+        return []
+
     def get(self, request, format=None):
 
-        latest_status = TrackerStat.objects.order_by('-update_time')[0]
+        identity = request.GET.get('tracker', None)
+
+        if identity is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        tracker = Tracker.objects.get(identity=identity)
+
+        latest_status = TrackerStat.objects.filter(
+            tracker=tracker
+        ).order_by('-update_time').first()
 
         serializer = TrackerStatSerializer(latest_status, many=False)
 
@@ -51,7 +75,16 @@ class StatsGatewayView(APIView):
 
 
 class StatsHistoryGatewayView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, format=None):
+
+        identity = request.GET.get('tracker', None)
+
+        if identity is None or identity == '':
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        tracker = Tracker.objects.get(identity=identity)
 
         filter_from = request.GET.get('from', timezone.now() - timedelta(days=1))
         filter_to = request.GET.get('to', timezone.now())
@@ -62,6 +95,7 @@ class StatsHistoryGatewayView(APIView):
             filter_to = tz.localize(datetime.strptime(filter_to, '%Y-%m-%d')).replace(hour=23, minute=59)
 
         historic_stats = TrackerStat.objects.filter(
+            tracker=tracker,
             update_time__range=(filter_from, filter_to),
             satellites__gte=3
         ).order_by('update_time')
@@ -71,9 +105,23 @@ class StatsHistoryGatewayView(APIView):
 
 
 class EventGatewayView(APIView):
-    def get(self, request, format=None):
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [IsAuthenticated()]
 
-        latest_status = TrackerEvent.objects.order_by('-update_time')[0]
+        return []
+
+    def get(self, request, format=None):
+        identity = request.GET.get('tracker', None)
+
+        if identity is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        tracker = Tracker.objects.get(identity=identity)
+
+        latest_status = TrackerEvent.objects.filter(
+            tracker=tracker
+        ).order_by('-update_time').first()
 
         serializer = TrackerEventSerializer(latest_status, many=False)
 

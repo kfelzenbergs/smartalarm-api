@@ -15,10 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from smartalarm_api.views import StatsGatewayView, EventGatewayView, StatsHistoryGatewayView
+from smartalarm_api.views.views import *
+from smartalarm_api.views.auth_views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^login/$', UserLoginView.as_view()),
+    url(r'^profile/$', UserProfileView.as_view()),
+    url(r'^trackers/$', TrackersView.as_view(), name='tracker-list'),
     url(r'^stats_gateway/$', StatsGatewayView.as_view()),
     url(r'^event_gateway/$', EventGatewayView.as_view()),
     url(r'^stats_history_gateway/$', StatsHistoryGatewayView.as_view()),
