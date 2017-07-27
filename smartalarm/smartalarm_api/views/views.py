@@ -57,7 +57,8 @@ class StatsGatewayView(APIView):
                 speed=data_received.get('speed'),
                 satellites=data_received.get('satelites'),
                 bat_level=data_received.get('bat_level'),
-                is_charging=data_received.get('is_charging')
+                is_charging=data_received.get('is_charging'),
+                car_voltage=data_received.get('car_voltage')
             )
 
             stats_entry.save()

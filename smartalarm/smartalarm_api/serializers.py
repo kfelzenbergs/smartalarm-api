@@ -80,6 +80,7 @@ class TrackerStatSerializer(serializers.ModelSerializer):
             'speed',
             'bat_level',
             'is_charging',
+            'car_voltage',
             'update_time',
             'last_known_address',
             'asset_name',

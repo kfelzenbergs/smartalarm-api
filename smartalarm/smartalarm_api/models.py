@@ -30,6 +30,7 @@ class TrackerStat(models.Model):
     speed = models.IntegerField(default=0)
     bat_level = models.IntegerField(default=0)
     is_charging = models.BooleanField(default=False)
+    car_voltage = models.FloatField(default=0)
 
 
 class TrackerEvent(models.Model):
