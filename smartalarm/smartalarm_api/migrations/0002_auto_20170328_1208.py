@@ -12,20 +12,4 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='user',
-            name='groups',
-        ),
-        migrations.RemoveField(
-            model_name='user',
-            name='user_permissions',
-        ),
-        migrations.AddField(
-            model_name='tracker',
-            name='imei',
-            field=models.CharField(max_length=256, null=True),
-        ),
-        migrations.DeleteModel(
-            name='User',
-        ),
     ]
