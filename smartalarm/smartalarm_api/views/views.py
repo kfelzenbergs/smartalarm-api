@@ -9,12 +9,37 @@ from datetime import datetime, timedelta
 from django.utils.timezone import get_current_timezone
 from django.utils import timezone
 from django.db.models import Q
-
+from twilio.rest import Client as TwClient
+from django.conf import settings
 
 class TrackersView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Tracker.objects.all()
     serializer_class = TrackerSerializer
+
+
+class CallsCallbackView(APIView):
+
+    def post(self, request, format=None):
+        data_received = request.data
+        print "received:", data_received
+
+        callStatus = data_received['CallStatus']
+        callSid = data_received['CallSid']
+
+        if callStatus == 'answered' or callStatus == 'in-progress':
+            print "attempting to terminate call"
+
+            client = TwClient(getattr(settings, "TW_ACCOUNT_SID", None), getattr(settings, "TW_AUTH_TOKEN", None))
+
+            call = client.calls(callSid) \
+                .update(status="completed")
+
+            print(call.direction)
+
+        return Response(
+            status=status.HTTP_200_OK
+        )
 
 
 class StatsGatewayView(APIView):
@@ -41,6 +66,39 @@ class StatsGatewayView(APIView):
         serializer = TrackerStatSerializer(latest_status, many=False)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put (self, request, format=None):
+
+        print request.GET
+
+        try:
+            stats_entry = TrackerStat(
+                tracker=Tracker.objects.get(
+                    Q(identity=request.GET.get('identity', None)) | Q(imei=request.GET.get('imei', None))
+                ),
+                lat=request.GET.get('lat', None),
+                lon=request.GET.get('lon', None),
+                alt=request.GET.get('alt', None),
+                speed=request.GET.get('speed', None),
+                satellites=request.GET.get('sat', None),
+                bat_level=request.GET.get('bat', None),
+                is_charging=request.GET.get('chrg', None),
+                car_voltage=request.GET.get('volt', None)
+            )
+
+            stats_entry.save()
+
+            return Response(
+                status=status.HTTP_200_OK
+            )
+
+        except Exception as e:
+            print e
+
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
 
     def post(self, request, format=None):
         data_received = request.data
