@@ -26,4 +26,5 @@ urlpatterns = [
     url(r'^stats_gateway/$', StatsGatewayView.as_view()),
     url(r'^event_gateway/$', EventGatewayView.as_view()),
     url(r'^stats_history_gateway/$', StatsHistoryGatewayView.as_view()),
+    url(r'^calls_callback/$', CallsCallbackView.as_view()),
 ]

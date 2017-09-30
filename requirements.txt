@@ -8,3 +8,5 @@ psycopg2==2.6.2
 supervisor==3.3.1
 pytz==2016.10
 geopy==1.11.0
+twilio==6.4.3
+

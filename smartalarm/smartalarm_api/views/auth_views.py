@@ -15,8 +15,8 @@ class UserProfileView(generics.GenericAPIView):
 
     def get (self, request, *args, **kwargs):
         user_data = User.objects.filter(pk=request.user.pk).values('email', 'first_name', 'last_name').first()
-        # user_token = Token.objects.filter(user=request.user).values('key').first()
-        # user_data['access_token'] = user_token['key']
+        user_token = Token.objects.filter(user=request.user).values('key').first()
+        user_data['access_token'] = user_token['key']
 
         return Response(user_data, status=status.HTTP_200_OK)
 
