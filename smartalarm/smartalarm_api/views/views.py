@@ -104,22 +104,40 @@ class StatsGatewayView(APIView):
     def post(self, request, format=None):
         data_received = request.data
 
-        def getTrip(tracker):
+        def getTrip(tracker, pos):
+            trip = None
             latest_trip = Trip.objects.filter(tracker=tracker).order_by('-update_time').first()
-
-            if latest_trip is not None and not latest_trip.finished:
-                return latest_trip
-            else:
+      
+            # if no trips then create first
+            if latest_trip is None:
                 trip = Trip(tracker=tracker)
                 trip.save()
-                return trip
+
+            # continuous trip
+            elif latest_trip is not None and not latest_trip.finished:
+                if positionHasChanged(latest_trip, pos):
+                    trip = latest_trip
+
+            # trip finished. should new trip start?
+            else:
+                if positionHasChanged(latest_trip, pos):
+                    trip = Trip(tracker=tracker)
+                    trip.save()
+
+            # add trip stat entry
+            if trip is not None:
+                trip_stat_entry = TripStat(
+                    trip=trip,
+                    stats=stats_entry
+                )
+                trip_stat_entry.save() 
 
         def positionHasChanged(trip, pos):
             latest_stat = TripStat.objects.filter(trip=trip).order_by('-created').first()
-
+            
             if latest_stat is None:
                 return True
-            elif abs(float(latest_stat.stats.lat) - float(pos[0])) > 100 or abs(float(latest_stat.stats.lon) != float(pos[1])) > 100:
+            elif abs(float(latest_stat.stats.lat) - float(pos[0])) > 0.01 or abs(float(latest_stat.stats.lon) != float(pos[1])) > 0.01:
                 return True
             else:
                 return False
@@ -141,14 +159,8 @@ class StatsGatewayView(APIView):
 
             stats_entry.save()
 
-            trip = getTrip(stats_entry.tracker)
-            if positionHasChanged(trip, (stats_entry.lat, stats_entry.lon)):
-                trip_stat_entry = TripStat(
-                    trip=getTrip(stats_entry.tracker),
-                    stats=stats_entry
-                )
-
-                trip_stat_entry.save()            
+            getTrip(stats_entry.tracker, (stats_entry.lat, stats_entry.lon))
+                       
 
             return Response(
                 status=status.HTTP_200_OK
