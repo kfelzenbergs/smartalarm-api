@@ -137,10 +137,13 @@ class StatsGatewayView(APIView):
                 trip_stat_entry.save() 
 
                 if new_trip:
-                    trip.address_start = get_address_from_coords(
-                        trip_stat_entry.stats.lat, 
-                        trip_stat_entry.stats.lon
-                    )
+                    if latest_trip is not None:
+                        trip.address_start = latest_trip.address_end
+                    else:
+                        trip.address_start = get_address_from_coords(
+                            trip_stat_entry.stats.lat, 
+                            trip_stat_entry.stats.lon
+                        )
                     trip.save()
 
         def positionHasChanged(trip, pos):
