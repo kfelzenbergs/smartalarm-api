@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^login/$', UserLoginView.as_view()),
     url(r'^profile/$', UserProfileView.as_view()),
     url(r'^trackers/$', TrackersView.as_view(), name='tracker-list'),
+    url(r'^trips/$', TripStatsView.as_view()),
     url(r'^stats_gateway/$', StatsGatewayView.as_view()),
     url(r'^event_gateway/$', EventGatewayView.as_view()),
     url(r'^stats_history_gateway/$', StatsHistoryGatewayView.as_view()),

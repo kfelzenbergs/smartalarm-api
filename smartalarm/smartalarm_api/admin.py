@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Tracker, TrackerStat, TrackerEvent, Asset
+from .models import Tracker, TrackerStat, TrackerEvent, Asset, Trip, TripStat
 
 
 @admin.register(Asset)
@@ -35,3 +35,11 @@ class TrackerEventsAdmin(admin.ModelAdmin):
     )
     search_fields = ['tracker', 'event_type']
     ordering = ("-update_time",)
+
+@admin.register(Trip)
+class TripAdmin(admin.ModelAdmin):
+    list_display = ('tracker','update_time')
+
+@admin.register(TripStat)
+class TripStatAdmin(admin.ModelAdmin):
+    list_display = ('trip', 'stats', 'created')

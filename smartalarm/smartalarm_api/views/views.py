@@ -3,8 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from smartalarm_api.models import Tracker, TrackerStat, TrackerEvent
-from smartalarm_api.serializers import TrackerSerializer, TrackerStatSerializer, TrackerHistoricStatSerializer, TrackerEventSerializer
+from smartalarm_api.models import Tracker, TrackerStat, TrackerEvent, Trip, TripStat
+from smartalarm_api.serializers import TripStatSerializer, TrackerSerializer, TrackerStatSerializer, TrackerHistoricStatSerializer, TrackerEventSerializer
 from datetime import datetime, timedelta
 from django.utils.timezone import get_current_timezone
 from django.utils import timezone
@@ -17,6 +17,9 @@ class TrackersView(generics.ListAPIView):
     queryset = Tracker.objects.all()
     serializer_class = TrackerSerializer
 
+class TripStatsView(generics.ListAPIView):
+    queryset = TripStat.objects.all().order_by('-created')
+    serializer_class = TripStatSerializer
 
 class CallsCallbackView(APIView):
 
@@ -69,8 +72,6 @@ class StatsGatewayView(APIView):
 
     def put (self, request, format=None):
 
-        print request.GET
-
         try:
             stats_entry = TrackerStat(
                 tracker=Tracker.objects.get(
@@ -102,7 +103,16 @@ class StatsGatewayView(APIView):
 
     def post(self, request, format=None):
         data_received = request.data
-        print "received:", data_received
+
+        def getTrip(tracker):
+            latest_trip = Trip.objects.filter(tracker=tracker).order_by('-update_time').first()
+
+            if latest_trip is not None and not latest_trip.finished:
+                return latest_trip
+            else:
+                trip = Trip(tracker=tracker)
+                trip.save()
+                return trip
 
         try:
             stats_entry = TrackerStat(
@@ -120,6 +130,13 @@ class StatsGatewayView(APIView):
             )
 
             stats_entry.save()
+
+            trip_stat_entry = TripStat(
+                trip=getTrip(stats_entry.tracker),
+                stats=stats_entry
+            )
+
+            trip_stat_entry.save()
 
             return Response(
                 status=status.HTTP_200_OK
@@ -188,7 +205,6 @@ class EventGatewayView(APIView):
 
     def post(self, request, format=None):
         data_received = request.data
-        print "received:", data_received
 
         events_entry = TrackerEvent(
             tracker=Tracker.objects.get(identity=data_received.get('identity')),
@@ -196,6 +212,15 @@ class EventGatewayView(APIView):
         )
 
         events_entry.save()
+
+        if events_entry.event_type == 'ignition_off':
+            trip = Trip.objects.filter(
+                tracker=events_entry.tracker,
+                finished=False
+            ).order_by('-update_time').first()
+            
+            trip.finished = True
+            trip.save()
 
         return Response(
             status=status.HTTP_200_OK

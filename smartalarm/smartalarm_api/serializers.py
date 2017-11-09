@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from models import Tracker, TrackerStat, TrackerEvent, Asset
+from models import Tracker, TrackerStat, TrackerEvent, Asset, Trip, TripStat
 from aux_functions import get_address_from_coords
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import (User,)
@@ -60,6 +60,22 @@ class TrackerSerializer(serializers.ModelSerializer):
             'identity',
             'name',
             'description'
+        ]
+
+class TrackerStatMinifiedSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = TrackerStat
+        fields = [
+            'lat',
+            'lon',
+            'alt',
+            'satellites',
+            'speed',
+            'bat_level',
+            'is_charging',
+            'car_voltage',
+            'update_time'
         ]
 
 
@@ -128,4 +144,25 @@ class TrackerHistoricStatSerializer(serializers.ModelSerializer):
         fields = [
             'lat',
             'lon',
+        ]
+
+class TripSerializer(serializers.ModelSerializer):
+    tracker = serializers.StringRelatedField()
+
+    class Meta:
+        model = Trip
+        fields = [
+            'tracker',
+            'finished'
+        ]
+
+class TripStatSerializer(serializers.ModelSerializer):
+    trip = TripSerializer()
+    stats = TrackerStatMinifiedSerializer()
+
+    class Meta:
+        model = TripStat
+        fields = [
+            'trip',
+            'stats'
         ]
