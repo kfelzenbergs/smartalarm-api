@@ -5,7 +5,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         def position_has_changed(stats):
-            diff = 100
+            diff = 0.001
             lat_diff = 0
             lon_diff = 0
             alt_diff = 0
