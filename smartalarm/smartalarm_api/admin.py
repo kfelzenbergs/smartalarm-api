@@ -38,7 +38,7 @@ class TrackerEventsAdmin(admin.ModelAdmin):
 
 @admin.register(Trip)
 class TripAdmin(admin.ModelAdmin):
-    list_display = ('tracker','update_time')
+    list_display = ('tracker','update_time', 'address_start', 'address_end')
 
 @admin.register(TripStat)
 class TripStatAdmin(admin.ModelAdmin):
