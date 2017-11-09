@@ -28,7 +28,7 @@ class Command(BaseCommand):
         for trip in ongoing_trips:
             # get recent trip stats
             trip_stats = TripStat.objects.filter(
-                trip=trip).order_by('-created')[:5]
+                trip=trip).order_by('-created')[:3]
             
             # check if last n positions have changed
             if not position_has_changed(trip_stats):
