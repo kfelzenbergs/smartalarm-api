@@ -105,6 +105,7 @@ class StatsGatewayView(APIView):
         data_received = request.data
 
         def getTrip(tracker, pos):
+            new_trip = False
             trip = None
             latest_trip = Trip.objects.filter(tracker=tracker).order_by('-update_time').first()
       
@@ -112,6 +113,7 @@ class StatsGatewayView(APIView):
             if latest_trip is None:
                 trip = Trip(tracker=tracker)
                 trip.save()
+                new_trip = True
 
             # continuous trip
             elif latest_trip is not None and not latest_trip.finished:
@@ -123,6 +125,7 @@ class StatsGatewayView(APIView):
                 if positionHasChanged(latest_trip, pos):
                     trip = Trip(tracker=tracker)
                     trip.save()
+                    new_trip = True
 
             # add trip stat entry
             if trip is not None:
@@ -132,12 +135,19 @@ class StatsGatewayView(APIView):
                 )
                 trip_stat_entry.save() 
 
+                if new_trip:
+                    trip.address_start = get_address_from_coords(
+                        trip_stat_entry.stats.lat, 
+                        trip_stat_entry.stats.lon
+                    )
+                    trip.save()
+
         def positionHasChanged(trip, pos):
             latest_stat = TripStat.objects.filter(trip=trip).order_by('-created').first()
             
             if latest_stat is None:
                 return True
-            elif abs(float(latest_stat.stats.lat) - float(pos[0])) > 0.001 or abs(float(latest_stat.stats.lon) != float(pos[1])) > 0.001:
+            elif abs(float(latest_stat.stats.lat) - float(pos[0])) > 0.001 or abs(float(latest_stat.stats.lon) - float(pos[1])) > 0.001:
                 return True
             else:
                 return False

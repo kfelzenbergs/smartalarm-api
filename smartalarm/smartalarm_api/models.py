@@ -57,6 +57,8 @@ class TrackerEvent(models.Model):
 class Trip(models.Model):
     tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, related_name='tracker_trips')
     finished = models.BooleanField(default=False)
+    address_start = models.CharField(max_length=250, default='unknown', null=True, blank=True)
+    address_end = models.CharField(max_length=250, default='unknown', null=True, blank=True)
     update_time = models.DateTimeField(auto_now=True)
 
 

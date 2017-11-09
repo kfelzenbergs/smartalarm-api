@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from smartalarm_api.models import (Trip, TripStat)
+from aux_functions import get_address_from_coords
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -31,5 +32,9 @@ class Command(BaseCommand):
             
             # check if last n positions have changed
             if not position_has_changed(trip_stats):
+                trip.address_end = get_address_from_coords(
+                    trip_stats.stats.lat, 
+                    trip_stats.stats.lon
+                )
                 trip.finished = True
                 trip.save()
