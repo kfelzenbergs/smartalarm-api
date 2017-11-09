@@ -114,6 +114,16 @@ class StatsGatewayView(APIView):
                 trip.save()
                 return trip
 
+        def positionHasChanged(trip, pos):
+            latest_stat = TripStat.objects.filter(trip=trip).order_by('-created').first()
+
+            if latest_stat is None:
+                return True
+            elif float(latest_stat.stats.lat) != float(pos[0]) or float(latest_stat.stats.lon) != float(pos[1]):
+                return True
+            else:
+                return False
+        
         try:
             stats_entry = TrackerStat(
                 tracker=Tracker.objects.get(
@@ -131,12 +141,14 @@ class StatsGatewayView(APIView):
 
             stats_entry.save()
 
-            trip_stat_entry = TripStat(
-                trip=getTrip(stats_entry.tracker),
-                stats=stats_entry
-            )
+            trip = getTrip(stats_entry.tracker)
+            if positionHasChanged(trip, (stats_entry.lat, stats_entry.lon)):
+                trip_stat_entry = TripStat(
+                    trip=getTrip(stats_entry.tracker),
+                    stats=stats_entry
+                )
 
-            trip_stat_entry.save()
+                trip_stat_entry.save()            
 
             return Response(
                 status=status.HTTP_200_OK
@@ -218,7 +230,7 @@ class EventGatewayView(APIView):
                 tracker=events_entry.tracker,
                 finished=False
             ).order_by('-update_time').first()
-            
+
             trip.finished = True
             trip.save()
 
