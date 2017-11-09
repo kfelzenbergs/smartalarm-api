@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.db.models import Q
 from twilio.rest import Client as TwClient
 from django.conf import settings
+from smartalarm_api.aux_functions import get_address_from_coords
 
 class TrackersView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
