@@ -119,7 +119,7 @@ class StatsGatewayView(APIView):
 
             if latest_stat is None:
                 return True
-            elif float(latest_stat.stats.lat) != float(pos[0]) or float(latest_stat.stats.lon) != float(pos[1]):
+            elif abs(float(latest_stat.stats.lat) - float(pos[0])) > 100 or abs(float(latest_stat.stats.lon) != float(pos[1])) > 100:
                 return True
             else:
                 return False
