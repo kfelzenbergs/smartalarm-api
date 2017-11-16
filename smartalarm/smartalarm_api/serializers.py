@@ -81,6 +81,7 @@ class TrackerStatMinifiedSerializer(serializers.ModelSerializer):
 
 class TrackerStatSerializer(serializers.ModelSerializer):
     last_known_address = serializers.SerializerMethodField()
+    last_time_updated = serializers.SerializerMethodField()
     asset_name = serializers.SerializerMethodField()
     asset_reg_nr = serializers.SerializerMethodField()
     tracker_id = serializers.SerializerMethodField()
@@ -99,6 +100,7 @@ class TrackerStatSerializer(serializers.ModelSerializer):
             'car_voltage',
             'update_time',
             'last_known_address',
+            'last_time_updated',
             'asset_name',
             'asset_reg_nr',
             'tracker_id',
@@ -116,6 +118,18 @@ class TrackerStatSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_last_known_address(obj):
         return get_address_from_coords(obj.lat, obj.lon)
+
+    @staticmethod
+    def get_last_time_updated(obj):
+        stat = TrackerStat.objects.filter(
+                tracker=obj.tracker,
+                satellites__gte=3
+            ).values_list('update_time').order_by('-update_time').first()
+
+        if stat is not None:
+            return stat[0]
+        else: 
+            return "unknown"
 
     @staticmethod
     def get_asset_name(obj):

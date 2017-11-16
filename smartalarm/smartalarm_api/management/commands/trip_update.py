@@ -6,17 +6,18 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         def position_has_changed(stats):
-            diff = 0.03
+            diff = 0.01
             lat_diff = 0
             lon_diff = 0
-            # alt_diff = 0
+            speed_sum = 0
 
             for i in range(0, len(stats)-1):
                 lat_diff += abs(stats[i].stats.lat - stats[i+1].stats.lat)
                 lon_diff += abs(stats[i].stats.lon - stats[i+1].stats.lon)
-                # alt_diff += abs(stats[i].stats.alt - stats[i+1].stats.alt)
+                speed_sum += stats[i].stats.speed
+            speed_sum += stats[len(stats)-1].stats.speed
     
-            if lat_diff > diff or lon_diff > diff:
+            if lat_diff > diff or lon_diff > diff or speed_sum > 0:
                 return True
             else:
                 return False
