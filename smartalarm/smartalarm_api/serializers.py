@@ -127,7 +127,7 @@ class TrackerStatSerializer(serializers.ModelSerializer):
             ).values_list('update_time').order_by('-update_time').first()
 
         if stat is not None:
-            return stat[0]
+            return stat[0].strftime("%Y-%m-%d %H:%M:%S+0300")
         else: 
             return "unknown"
 
