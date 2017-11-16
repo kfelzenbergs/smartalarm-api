@@ -64,7 +64,8 @@ class StatsGatewayView(APIView):
         tracker = Tracker.objects.get(identity=identity)
 
         latest_status = TrackerStat.objects.filter(
-            tracker=tracker
+            tracker=tracker,
+            satellites__gte=3
         ).order_by('-update_time').first()
 
         serializer = TrackerStatSerializer(latest_status, many=False)
