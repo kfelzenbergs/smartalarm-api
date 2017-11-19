@@ -10,6 +10,12 @@ class Tracker(models.Model):
     name = models.CharField(max_length=256, null=False)
     description = models.TextField(max_length=500, blank=True)
 
+    tracker_types = (
+        ('owl', 'Owl'),
+        ('coban', 'Coban'),
+    )
+    tracker_type = models.CharField(max_length=100, default='unknown', choices=tracker_types)
+
     def __unicode__(self):
         return self.name
 
