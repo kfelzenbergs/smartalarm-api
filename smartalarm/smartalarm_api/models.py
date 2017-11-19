@@ -11,6 +11,7 @@ class Tracker(models.Model):
     description = models.TextField(max_length=500, blank=True)
 
     tracker_types = (
+        ('unknown', 'Unknown'),
         ('owl', 'Owl'),
         ('coban', 'Coban'),
     )

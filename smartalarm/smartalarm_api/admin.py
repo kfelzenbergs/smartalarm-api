@@ -9,7 +9,12 @@ class AssetAdmin(admin.ModelAdmin):
 
 @admin.register(Tracker)
 class TrackerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'identity', 'imei')
+    list_display = ('name', 'identity', 'imei', 'tracker_type')
+
+    list_filter = (
+        ('tracker_type', admin.AllValuesFieldListFilter),
+    )
+
     search_fields = ['name', 'imei']
 
 
