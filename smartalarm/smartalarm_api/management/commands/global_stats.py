@@ -10,6 +10,7 @@ class Command(BaseCommand):
         trackers = Tracker.objects.all()
 
         for tracker in trackers:
+            print "calculating for tracker:", tracker.name
             distance_traveled = 0
             count_zero_satellites = 0
             update_time = 0
@@ -42,7 +43,15 @@ class Command(BaseCommand):
                     count_zero_satellites +=1
 
                 time_between_stat_updates = tracker_stats[i+1].update_time - tracker_stats[i].update_time
-                if tracker_stats[i].satellites > 0 and tracker_stats[i+1].satellites > 0 and time_between_stat_updates.seconds < UPDATE_TIME_MAX:                    
+                if (
+                    # if Owl
+                    (tracker.tracker_type == Tracker.TYPE_OWL and 
+                    tracker_stats[i].satellites > 0 and 
+                    tracker_stats[i+1].satellites > 0) 
+                    or
+                    # if not Owl 
+                    tracker.tracker_type is not Tracker.TYPE_OWL
+                    ) and tracker_stats[i].speed > 0 and tracker_stats[i+1].speed > 0 and time_between_stat_updates.seconds < UPDATE_TIME_MAX:                    
                     
                     coords = [
                         (
