@@ -10,12 +10,16 @@ class Tracker(models.Model):
     name = models.CharField(max_length=256, null=False)
     description = models.TextField(max_length=500, blank=True)
 
+    TYPE_UNKNOWN = 1
+    TYPE_OWL = 2
+    TYPE_COBAN = 3
+
     tracker_types = (
-        ('unknown', 'Unknown'),
-        ('owl', 'Owl'),
-        ('coban', 'Coban'),
+        (TYPE_UNKNOWN, 'Unknown'),
+        (TYPE_OWL, 'Owl'),
+        (TYPE_COBAN, 'Coban'),
     )
-    tracker_type = models.CharField(max_length=100, default='unknown', choices=tracker_types)
+    tracker_type = models.IntegerField(default=TYPE_UNKNOWN, choices=tracker_types)
 
     def __unicode__(self):
         return self.name
@@ -73,3 +77,40 @@ class TripStat(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name='tripstat_trips')
     stats = models.ForeignKey(TrackerStat, on_delete=models.CASCADE, related_name='tripstat_stats')
     created = models.DateTimeField(auto_now=True)
+
+
+class Zone(models.Model):
+    tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, related_name='tracker_zones')
+    name = models.CharField(max_length=256, null=False)
+    
+    ZONE_CIRCLE = 1
+    ZONE_RECTANGLE = 2
+    ZONE_POLYGON = 3
+
+    zone_choices = (
+        (ZONE_CIRCLE, 'Circle'),
+        (ZONE_RECTANGLE, 'Rectangle'),
+        (ZONE_POLYGON, 'Polygon'),
+    )
+
+    zone_type = models.IntegerField(choices=zone_choices, null=True, blank=True)
+    bounds = models.CharField(max_length=1000, null=True, blank=True)
+
+    ALARM_ZONE_EXIT = 1
+    ALARM_ZONE_ENTER = 2
+
+    alarm_choices = (
+        (ALARM_ZONE_EXIT, 'Zone exit'),
+        (ALARM_ZONE_ENTER, 'Zone enter')
+    )
+
+    alarm_on = models.IntegerField(choices=alarm_choices, null=True, blank=True)
+    alarm_enabled = models.BooleanField(default=False)
+    update_time = models.DateTimeField(auto_now=True)
+
+
+class GlobalStat(models.Model):
+    tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, related_name='tracker_globals')
+    distance_traveled = models.FloatField(default=0)
+    count_zero_satellites = models.IntegerField(default=0)
+    update_time = models.DateTimeField(auto_now=True)
