@@ -167,7 +167,10 @@ class TripSerializer(serializers.ModelSerializer):
         model = Trip
         fields = [
             'tracker',
-            'finished'
+            'finished',
+            'address_start',
+            'address_end',
+            'update_time'
         ]
 
 class TripStatSerializer(serializers.ModelSerializer):
