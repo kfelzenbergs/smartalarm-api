@@ -166,6 +166,7 @@ class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
         fields = [
+            'id',
             'tracker',
             'finished',
             'address_start',
