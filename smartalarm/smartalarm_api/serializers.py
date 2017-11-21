@@ -186,6 +186,7 @@ class TripStatSerializer(serializers.ModelSerializer):
         ]
 
 class ZoneSerializer(serializers.ModelSerializer):
+    tracker = serializers.StringRelatedField()
 
     class Meta:
         model = Zone
