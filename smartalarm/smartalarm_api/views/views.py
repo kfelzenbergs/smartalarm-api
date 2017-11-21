@@ -3,8 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from smartalarm_api.models import Tracker, TrackerStat, TrackerEvent, Trip, TripStat
-from smartalarm_api.serializers import TripStatSerializer, TrackerSerializer, TrackerStatSerializer, TrackerHistoricStatSerializer, TrackerEventSerializer
+from smartalarm_api.models import Tracker, TrackerStat, TrackerEvent, Trip, TripStat, Zone
+from smartalarm_api.serializers import ZoneSerializer, TripStatSerializer, TrackerSerializer, TrackerStatSerializer, TrackerHistoricStatSerializer, TrackerEventSerializer
 from datetime import datetime, timedelta
 from django.utils.timezone import get_current_timezone
 from django.utils import timezone
@@ -19,8 +19,13 @@ class TrackersView(generics.ListAPIView):
     serializer_class = TrackerSerializer
 
 class TripStatsView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = TripStat.objects.all().order_by('-created')
     serializer_class = TripStatSerializer
+
+class ZonesView(generics.ListAPIView):
+    queryset = Zone.objects.all().order_by('-update_time')
+    serializer_class = ZoneSerializer
 
 class CallsCallbackView(APIView):
 

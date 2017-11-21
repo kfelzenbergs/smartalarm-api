@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from models import Tracker, TrackerStat, TrackerEvent, Asset, Trip, TripStat
+from models import Tracker, TrackerStat, TrackerEvent, Asset, Trip, TripStat, Zone
 from aux_functions import get_address_from_coords
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import (User,)
@@ -179,4 +179,18 @@ class TripStatSerializer(serializers.ModelSerializer):
         fields = [
             'trip',
             'stats'
+        ]
+
+class ZoneSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Zone
+        fields = [
+            'tracker',
+            'name',
+            'zone_type',
+            'alarm_on',
+            'alarm_enabled',
+            'bounds',
+            'update_time'
         ]
