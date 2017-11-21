@@ -20,7 +20,7 @@ class TrackersView(generics.ListAPIView):
 
 class TripsView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
-    queryset = Trip.objects.all().order_by('-created')
+    queryset = Trip.objects.all().order_by('-update_time')
     serializer_class = TripSerializer
 
 class TripStatsView(generics.ListAPIView):
@@ -31,7 +31,7 @@ class TripStatsView(generics.ListAPIView):
         trip = self.request.query_params.get('trip', None)
         queryset = queryset.filter(trip=trip)
         return queryset
-    
+
 
 class ZonesView(generics.ListAPIView):
     queryset = Zone.objects.all().order_by('-update_time')
