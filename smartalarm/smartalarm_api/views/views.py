@@ -79,7 +79,7 @@ class StatsGatewayView(APIView):
         tracker = Tracker.objects.get(identity=identity)
 
         satellites_min = 0
-        if tracker.tracker_type == 'owl':
+        if tracker.tracker_type == Tracker.TYPE_OWL:
             satellites_min = 3
 
         latest_status = TrackerStat.objects.filter(
@@ -229,13 +229,15 @@ class StatsHistoryGatewayView(APIView):
             filter_to = tz.localize(datetime.strptime(filter_to, '%Y-%m-%d')).replace(hour=23, minute=59)
 
         satellites_min = 0
-        if tracker.tracker_type == 'owl':
+        if tracker.tracker_type == Tracker.TYPE_OWL:
             satellites_min = 3
 
         historic_stats = TrackerStat.objects.filter(
             tracker=tracker,
             update_time__range=(filter_from, filter_to),
             satellites__gte=satellites_min,
+            lat__gt=0.0,
+            lon__gt=0.0
         ).order_by('update_time')
         serializer = TrackerHistoricStatSerializer(historic_stats, many=True)
 
