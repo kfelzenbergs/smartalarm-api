@@ -28,7 +28,7 @@ class TrackerStatsAdmin(admin.ModelAdmin):
         ('car_running', admin.BooleanFieldListFilter),
     )
 
-    search_fields = ['tracker', 'event_type']
+    search_fields = ['tracker__name',]
     ordering = ("-update_time",)
 
 
