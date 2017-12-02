@@ -20,12 +20,12 @@ class TrackerAdmin(admin.ModelAdmin):
 
 @admin.register(TrackerStat)
 class TrackerStatsAdmin(admin.ModelAdmin):
-    list_display = ('tracker', 'lat', 'lon', 'alt', 'satellites', 'speed', 'bat_level', 'is_charging',
+    list_display = ('tracker', 'lat', 'lon', 'alt', 'satellites', 'speed', 'bat_level', 'car_running',
                     'car_voltage', 'update_time')
     list_filter = (
         ('satellites', admin.AllValuesFieldListFilter),
         ('bat_level', admin.AllValuesFieldListFilter),
-        ('is_charging', admin.BooleanFieldListFilter),
+        ('car_running', admin.BooleanFieldListFilter),
     )
 
     search_fields = ['tracker', 'event_type']

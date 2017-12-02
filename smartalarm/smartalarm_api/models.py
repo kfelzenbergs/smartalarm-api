@@ -41,7 +41,7 @@ class TrackerStat(models.Model):
     satellites = models.IntegerField(default=0)
     speed = models.IntegerField(default=0)
     bat_level = models.IntegerField(default=0)
-    is_charging = models.BooleanField(default=False)
+    car_running = models.BooleanField(default=False)
     car_voltage = models.FloatField(default=0)
 
 

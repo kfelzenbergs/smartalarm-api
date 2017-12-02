@@ -104,7 +104,7 @@ class StatsGatewayView(APIView):
                 speed=request.GET.get('speed', None),
                 satellites=request.GET.get('sat', None),
                 bat_level=request.GET.get('bat', None),
-                is_charging=request.GET.get('chrg', None),
+                car_running=request.GET.get('chrg', None),
                 car_voltage=request.GET.get('volt', None)
             )
 
@@ -187,7 +187,7 @@ class StatsGatewayView(APIView):
                 speed=data_received.get('speed'),
                 satellites=data_received.get('satelites'),
                 bat_level=data_received.get('bat_level'),
-                is_charging=data_received.get('is_charging'),
+                car_running=data_received.get('car_running'),
                 car_voltage=data_received.get('car_voltage')
             )
 

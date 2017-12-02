@@ -73,7 +73,7 @@ class TrackerStatMinifiedSerializer(serializers.ModelSerializer):
             'satellites',
             'speed',
             'bat_level',
-            'is_charging',
+            'car_running',
             'car_voltage',
             'update_time'
         ]
@@ -96,7 +96,7 @@ class TrackerStatSerializer(serializers.ModelSerializer):
             'satellites',
             'speed',
             'bat_level',
-            'is_charging',
+            'car_running',
             'car_voltage',
             'update_time',
             'last_known_address',
