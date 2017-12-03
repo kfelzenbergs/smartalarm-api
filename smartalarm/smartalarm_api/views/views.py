@@ -13,6 +13,7 @@ from twilio.rest import Client as TwClient
 from django.conf import settings
 from smartalarm_api.aux_functions import get_address_from_coords
 from django.core.exceptions import ObjectDoesNotExist
+import json
 
 class TrackersView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
@@ -61,15 +62,18 @@ class ZonesView(APIView):
         if obj_id is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        zone = Zone.objects.get(id=obj_id)
-        zone.alarm_on = request.data.get('alarm_on')
-        zone.alarm_enabled = request.data.get('alarm_enabled')
-        zone.bounds = request.data.get('bounds')
-        zone.save()
+        try:
+            zone = Zone.objects.get(id=obj_id)
+            zone.alarm_on = request.data.get('alarm_on')
+            zone.alarm_enabled = request.data.get('alarm_enabled')
+            zone.bounds = json.dumps(request.data.get('bounds'))
+            zone.save()
 
-        serializer = ZoneSerializer(zone)
+            serializer = ZoneSerializer(zone)
         
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, format=None):
         print request.data.get('tracker')
@@ -80,7 +84,7 @@ class ZonesView(APIView):
                 ),
                 name=request.data.get('name'),
                 zone_type=request.data.get('zone_type'),
-                bounds=request.data.get('bounds'),
+                bounds=json.dumps(request.data.get('bounds')),
                 alarm_on=request.data.get('alarm_on'),
                 alarm_enabled=request.data.get('alarm_enabled')
             )
