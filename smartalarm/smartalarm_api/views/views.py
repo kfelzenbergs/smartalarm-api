@@ -45,7 +45,7 @@ class ZonesView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, format=None):
-        obj_id = request.data.get('id', None)
+        obj_id = request.GET.get('id', None)
         if obj_id is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
