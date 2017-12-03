@@ -54,12 +54,13 @@ class TripStatAdmin(admin.ModelAdmin):
 
 @admin.register(Zone)
 class ZoneAdmin(admin.ModelAdmin):
-    list_display = ('tracker', 'name', 'zone_type', 'alarm_on', 'alarm_enabled', 'updated_at')
+    list_display = ('tracker', 'name', 'zone_type', 'alarm_on', 'alarm_enabled', 'created_at', 'updated_at')
     list_filter = (
         ('zone_type', admin.AllValuesFieldListFilter),
         ('alarm_on', admin.AllValuesFieldListFilter),
         ('alarm_enabled', admin.AllValuesFieldListFilter),
     )
+    readonly_fields = ('created_at', 'updated_at')
 
 
 @admin.register(GlobalStat)

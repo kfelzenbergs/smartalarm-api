@@ -20,6 +20,8 @@ class Tracker(models.Model):
         (TYPE_COBAN, 'Coban'),
     )
     tracker_type = models.IntegerField(default=TYPE_UNKNOWN, choices=tracker_types)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return self.name
@@ -30,11 +32,12 @@ class Asset(models.Model):
     name = models.CharField(max_length=256, null=False)
     reg_number = models.CharField(max_length=256, null=False)
     phone_number = models.CharField(max_length=50, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class TrackerStat(models.Model):
     tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, related_name='tracker_stats')
-    updated_at = models.DateTimeField(auto_now=True)
     lat = models.FloatField(default=0)
     lon = models.FloatField(default=0)
     alt = models.FloatField(default=0)
@@ -43,6 +46,8 @@ class TrackerStat(models.Model):
     bat_level = models.IntegerField(default=0)
     car_running = models.BooleanField(default=False)
     car_voltage = models.FloatField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class TrackerEvent(models.Model):
@@ -63,6 +68,7 @@ class TrackerEvent(models.Model):
 
     event_type = models.CharField(max_length=100, default='unknown', choices=event_choices)
     updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Trip(models.Model):
@@ -80,6 +86,7 @@ class Trip(models.Model):
 class TripStat(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name='tripstat_trips')
     stats = models.ForeignKey(TrackerStat, on_delete=models.CASCADE, related_name='tripstat_stats')
+    updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -111,6 +118,7 @@ class Zone(models.Model):
     alarm_on = models.IntegerField(choices=alarm_choices, null=True, blank=True)
     alarm_enabled = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class GlobalStat(models.Model):
@@ -118,3 +126,4 @@ class GlobalStat(models.Model):
     distance_traveled = models.FloatField(default=0)
     count_zero_satellites = models.IntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)

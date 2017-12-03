@@ -12,6 +12,7 @@ from django.db.models import Q
 from twilio.rest import Client as TwClient
 from django.conf import settings
 from smartalarm_api.aux_functions import get_address_from_coords
+from django.core.exceptions import ObjectDoesNotExist
 
 class TrackersView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
@@ -33,9 +34,70 @@ class TripStatsView(generics.ListAPIView):
         return queryset
 
 
-class ZonesView(generics.ListAPIView):
-    queryset = Zone.objects.all().order_by('-updated_at')
-    serializer_class = ZoneSerializer
+class ZonesView(APIView):
+    def get(self, request, format=None):
+        queryset = Zone.objects.all().order_by('-updated_at')
+        serializer = ZoneSerializer(queryset, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, format=None):
+        obj_id = request.data.get('id', None)
+        if obj_id is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            zone = Zone.objects.get(id=obj_id)
+            zone.delete()
+        except ObjectDoesNotExist as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    def patch(self, request, format=None):
+        obj_id = request.data.get('id', None)
+        if obj_id is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        zone = Zone.objects.get(id=obj_id)
+        zone.alarm_on = request.data.get('alarm_on')
+        zone.alarm_enabled = request.data.get('alarm_enabled')
+        zone.bounds = request.data.get('bounds')
+        zone.save()
+
+        serializer = ZoneSerializer(zone)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, format=None):
+        print request.data.get('tracker')
+        try:
+            zone = Zone(
+                tracker=Tracker.objects.get(
+                    identity=request.data.get('tracker')
+                ),
+                name=request.data.get('name'),
+                zone_type=request.data.get('zone_type'),
+                bounds=request.data.get('bounds'),
+                alarm_on=request.data.get('alarm_on'),
+                alarm_enabled=request.data.get('alarm_enabled')
+            )
+
+            zone.save()
+
+            serializer = ZoneSerializer(zone)                       
+
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+
+        except Exception as e:
+            print e
+
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 class CallsCallbackView(APIView):
 
