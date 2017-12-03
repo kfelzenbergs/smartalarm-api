@@ -21,7 +21,7 @@ class TrackerAdmin(admin.ModelAdmin):
 @admin.register(TrackerStat)
 class TrackerStatsAdmin(admin.ModelAdmin):
     list_display = ('tracker', 'lat', 'lon', 'alt', 'satellites', 'speed', 'bat_level', 'car_running',
-                    'car_voltage', 'update_time')
+                    'car_voltage', 'updated_at')
     list_filter = (
         ('satellites', admin.AllValuesFieldListFilter),
         ('bat_level', admin.AllValuesFieldListFilter),
@@ -29,32 +29,32 @@ class TrackerStatsAdmin(admin.ModelAdmin):
     )
 
     search_fields = ['tracker__name',]
-    ordering = ("-update_time",)
+    ordering = ("-updated_at",)
 
 
 @admin.register(TrackerEvent)
 class TrackerEventsAdmin(admin.ModelAdmin):
-    list_display = ('tracker', 'event_type', 'update_time')
+    list_display = ('tracker', 'event_type', 'updated_at')
     list_filter = (
         ('event_type', admin.AllValuesFieldListFilter),
     )
     search_fields = ['tracker', 'event_type']
-    ordering = ("-update_time",)
+    ordering = ("-updated_at",)
 
 
 @admin.register(Trip)
 class TripAdmin(admin.ModelAdmin):
-    list_display = ('tracker','update_time', 'address_start', 'address_end')
+    list_display = ('tracker','updated_at', 'address_start', 'address_end')
 
 
 @admin.register(TripStat)
 class TripStatAdmin(admin.ModelAdmin):
-    list_display = ('trip', 'stats', 'created')
+    list_display = ('trip', 'stats', 'created_at')
 
 
 @admin.register(Zone)
 class ZoneAdmin(admin.ModelAdmin):
-    list_display = ('tracker', 'name', 'zone_type', 'alarm_on', 'alarm_enabled', 'update_time')
+    list_display = ('tracker', 'name', 'zone_type', 'alarm_on', 'alarm_enabled', 'updated_at')
     list_filter = (
         ('zone_type', admin.AllValuesFieldListFilter),
         ('alarm_on', admin.AllValuesFieldListFilter),
@@ -64,4 +64,4 @@ class ZoneAdmin(admin.ModelAdmin):
 
 @admin.register(GlobalStat)
 class GlobalStatAdmin(admin.ModelAdmin):
-    list_display = ('tracker', 'distance_traveled', 'count_zero_satellites', 'update_time')
+    list_display = ('tracker', 'distance_traveled', 'count_zero_satellites', 'updated_at')

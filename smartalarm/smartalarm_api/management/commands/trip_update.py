@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from smartalarm_api.models import (Trip, TripStat)
 from smartalarm_api.aux_functions import get_address_from_coords
+from django.utils import timezone
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -24,13 +25,23 @@ class Command(BaseCommand):
 
         ongoing_trips = Trip.objects.filter(
             finished=False,
-        ).order_by('-update_time')
+        ).order_by('-updated_at')
 
         for trip in ongoing_trips:
             # get recent trip stats
             trip_stats = TripStat.objects.filter(
-                trip=trip).order_by('-created')[:3]
+                trip=trip).order_by('-created_at')
             
+            speed_avg = 0
+            print trip_stats
+            for stat in trip_stats:
+                if stat.stats.speed > 0:
+                    speed_avg += stat.stats.speed
+            
+            trip.speed_avg = speed_avg
+            trip.save()
+            
+            trip_stats = trip_stats[:3]
             # check if last n positions have changed
             if not position_has_changed(trip_stats):
                 trip.address_end = get_address_from_coords(
@@ -38,4 +49,5 @@ class Command(BaseCommand):
                     trip_stats[len(trip_stats)-1].stats.lon
                 )
                 trip.finished = True
+                trip.time_end = timezone.now()
                 trip.save()

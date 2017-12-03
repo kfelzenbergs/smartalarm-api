@@ -75,7 +75,7 @@ class TrackerStatMinifiedSerializer(serializers.ModelSerializer):
             'bat_level',
             'car_running',
             'car_voltage',
-            'update_time'
+            'updated_at'
         ]
 
 
@@ -98,7 +98,7 @@ class TrackerStatSerializer(serializers.ModelSerializer):
             'bat_level',
             'car_running',
             'car_voltage',
-            'update_time',
+            'updated_at',
             'last_known_address',
             'last_time_updated',
             'asset_name',
@@ -124,7 +124,7 @@ class TrackerStatSerializer(serializers.ModelSerializer):
         stat = TrackerStat.objects.filter(
                 tracker=obj.tracker,
                 satellites__gte=3
-            ).values_list('update_time').order_by('-update_time').first()
+            ).values_list('updated_at').order_by('-updated_at').first()
 
         if stat is not None:
             return stat[0].strftime("%Y-%m-%dT%H:%M:%S+0300")
@@ -148,7 +148,7 @@ class TrackerEventSerializer(serializers.ModelSerializer):
         model = TrackerEvent
         fields = [
             'event_type',
-            'update_time'
+            'updated_at'
         ]
 
 
@@ -171,7 +171,7 @@ class TripSerializer(serializers.ModelSerializer):
             'finished',
             'address_start',
             'address_end',
-            'update_time'
+            'updated_at'
         ]
 
 class TripStatSerializer(serializers.ModelSerializer):
@@ -197,5 +197,5 @@ class ZoneSerializer(serializers.ModelSerializer):
             'alarm_on',
             'alarm_enabled',
             'bounds',
-            'update_time'
+            'updated_at'
         ]

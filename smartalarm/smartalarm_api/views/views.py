@@ -20,7 +20,7 @@ class TrackersView(generics.ListAPIView):
 
 class TripsView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
-    queryset = Trip.objects.all().order_by('-update_time')
+    queryset = Trip.objects.all().order_by('-updated_at')
     serializer_class = TripSerializer
 
 class TripStatsView(generics.ListAPIView):
@@ -34,7 +34,7 @@ class TripStatsView(generics.ListAPIView):
 
 
 class ZonesView(generics.ListAPIView):
-    queryset = Zone.objects.all().order_by('-update_time')
+    queryset = Zone.objects.all().order_by('-updated_at')
     serializer_class = ZoneSerializer
 
 class CallsCallbackView(APIView):
@@ -85,7 +85,7 @@ class StatsGatewayView(APIView):
         latest_status = TrackerStat.objects.filter(
             tracker=tracker,
             satellites__gte=satellites_min
-        ).order_by('-update_time').first()
+        ).order_by('-updated_at').first()
 
         serializer = TrackerStatSerializer(latest_status, many=False)
 
@@ -128,7 +128,7 @@ class StatsGatewayView(APIView):
         def getTrip(tracker, pos):
             new_trip = False
             trip = None
-            latest_trip = Trip.objects.filter(tracker=tracker).order_by('-update_time').first()
+            latest_trip = Trip.objects.filter(tracker=tracker).order_by('-updated_at').first()
       
             # if no trips then create first
             if latest_trip is None:
@@ -167,7 +167,7 @@ class StatsGatewayView(APIView):
                     trip.save()
 
         def positionHasChanged(trip, pos):
-            latest_stat = TripStat.objects.filter(trip=trip).order_by('-created').first()
+            latest_stat = TripStat.objects.filter(trip=trip).order_by('-created_at').first()
             
             if latest_stat is None:
                 return True
@@ -234,11 +234,11 @@ class StatsHistoryGatewayView(APIView):
 
         historic_stats = TrackerStat.objects.filter(
             tracker=tracker,
-            update_time__range=(filter_from, filter_to),
+            updated_at__range=(filter_from, filter_to),
             satellites__gte=satellites_min,
             lat__gt=0.0,
             lon__gt=0.0
-        ).order_by('update_time')
+        ).order_by('updated_at')
         serializer = TrackerHistoricStatSerializer(historic_stats, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -261,7 +261,7 @@ class EventGatewayView(APIView):
 
         latest_status = TrackerEvent.objects.filter(
             tracker=tracker
-        ).order_by('-update_time').first()
+        ).order_by('-updated_at').first()
 
         serializer = TrackerEventSerializer(latest_status, many=False)
 
@@ -281,7 +281,7 @@ class EventGatewayView(APIView):
             trip = Trip.objects.filter(
                 tracker=events_entry.tracker,
                 finished=False
-            ).order_by('-update_time').first()
+            ).order_by('-updated_at').first()
 
             trip.finished = True
             trip.save()

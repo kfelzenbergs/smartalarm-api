@@ -34,7 +34,7 @@ class Asset(models.Model):
 
 class TrackerStat(models.Model):
     tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, related_name='tracker_stats')
-    update_time = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
     lat = models.FloatField(default=0)
     lon = models.FloatField(default=0)
     alt = models.FloatField(default=0)
@@ -62,7 +62,7 @@ class TrackerEvent(models.Model):
     )
 
     event_type = models.CharField(max_length=100, default='unknown', choices=event_choices)
-    update_time = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Trip(models.Model):
@@ -70,13 +70,17 @@ class Trip(models.Model):
     finished = models.BooleanField(default=False)
     address_start = models.CharField(max_length=250, default='unknown', null=True, blank=True)
     address_end = models.CharField(max_length=250, default='unknown', null=True, blank=True)
-    update_time = models.DateTimeField(auto_now=True)
+    time_start = models.DateTimeField(auto_now=True)
+    time_end = models.DateTimeField(null=True, blank=True)
+    speed_avg = models.FloatField(null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class TripStat(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name='tripstat_trips')
     stats = models.ForeignKey(TrackerStat, on_delete=models.CASCADE, related_name='tripstat_stats')
-    created = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Zone(models.Model):
@@ -106,11 +110,11 @@ class Zone(models.Model):
 
     alarm_on = models.IntegerField(choices=alarm_choices, null=True, blank=True)
     alarm_enabled = models.BooleanField(default=False)
-    update_time = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class GlobalStat(models.Model):
     tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, related_name='tracker_globals')
     distance_traveled = models.FloatField(default=0)
     count_zero_satellites = models.IntegerField(default=0)
-    update_time = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
