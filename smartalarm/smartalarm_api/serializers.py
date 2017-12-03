@@ -191,6 +191,7 @@ class ZoneSerializer(serializers.ModelSerializer):
     class Meta:
         model = Zone
         fields = [
+            'id',
             'tracker',
             'name',
             'zone_type',
