@@ -35,6 +35,8 @@ class TripStatsView(generics.ListAPIView):
 
 
 class ZonesView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
     def get(self, request, format=None):
         queryset = Zone.objects.all().order_by('-updated_at')
         serializer = ZoneSerializer(queryset, many=True)
