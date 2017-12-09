@@ -14,6 +14,7 @@ from django.conf import settings
 from smartalarm_api.aux_functions import get_address_from_coords
 from django.core.exceptions import ObjectDoesNotExist
 import json
+from django.db.models import Count
 
 class TrackersView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
@@ -22,7 +23,13 @@ class TrackersView(generics.ListAPIView):
 
 class TripsView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
-    queryset = Trip.objects.all().order_by('-updated_at')
+    
+    queryset = Trip.objects.annotate(
+        tripstat_count=Count('tripstat_trips')
+    ).filter(
+        tripstat_count__gte=2
+    ).order_by('-updated_at')
+
     serializer_class = TripSerializer
 
 class TripStatsView(generics.ListAPIView):
@@ -35,7 +42,7 @@ class TripStatsView(generics.ListAPIView):
         queryset = TripStat.objects.filter(
             trip=Trip.objects.get(pk=trip_id)
         )
-        
+
         return queryset
 
 
