@@ -111,10 +111,9 @@ class TrackerStatSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_last_trip(obj):
-        trip_stat = TripStat.objects.filter(stats=obj).order_by('-updated_at').first()
+        trip = Trip.objects.filter(tracker=obj.tracker).order_by('-updated_at').first()
 
-        if trip_stat is not None:
-            trip = Trip.objects.get(pk=trip_stat.trip.id)
+        if trip is not None:
             serializer = TripSerializer(trip)
             return serializer.data
         else:
