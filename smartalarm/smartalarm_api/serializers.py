@@ -86,6 +86,7 @@ class TrackerStatSerializer(serializers.ModelSerializer):
     asset_reg_nr = serializers.SerializerMethodField()
     tracker_id = serializers.SerializerMethodField()
     tracker_name = serializers.SerializerMethodField()
+    last_trip = serializers.SerializerMethodField()
 
     class Meta:
         model = TrackerStat
@@ -100,12 +101,24 @@ class TrackerStatSerializer(serializers.ModelSerializer):
             'car_voltage',
             'updated_at',
             'last_known_address',
+            'last_trip',
             'last_time_updated',
             'asset_name',
             'asset_reg_nr',
             'tracker_id',
             'tracker_name'
         ]
+
+    @staticmethod
+    def get_last_trip(obj):
+        trip_stat = TripStat.objects.filter(stats=obj).order_by('-updated_at').first()
+
+        if trip_stat is not None:
+            trip = Trip.objects.get(pk=trip_stat.trip.id)
+            serializer = TripSerializer(trip)
+            return serializer.data
+        else:
+            return "unknown"
 
     @staticmethod
     def get_tracker_id(obj):
