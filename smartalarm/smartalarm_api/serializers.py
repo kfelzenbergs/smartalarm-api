@@ -183,6 +183,9 @@ class TripSerializer(serializers.ModelSerializer):
             'finished',
             'address_start',
             'address_end',
+            'time_start',
+            'time_end',
+            'speed_avg',
             'updated_at'
         ]
 
