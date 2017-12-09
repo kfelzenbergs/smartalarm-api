@@ -30,8 +30,12 @@ class TripStatsView(generics.ListAPIView):
     serializer_class = TripStatSerializer
 
     def get_queryset(self):
-        trip = self.request.query_params.get('trip', None)
-        queryset = queryset.filter(trip=trip)
+        trip_id = self.request.query_params.get('trip', None)
+
+        queryset = TripStat.objects.filter(
+            trip=Trip.objects.get(pk=trip_id)
+        )
+        
         return queryset
 
 
@@ -76,7 +80,6 @@ class ZonesView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, format=None):
-        print request.data.get('tracker')
         try:
             zone = Zone(
                 tracker=Tracker.objects.get(
@@ -88,9 +91,7 @@ class ZonesView(APIView):
                 alarm_on=request.data.get('alarm_on'),
                 alarm_enabled=request.data.get('alarm_enabled')
             )
-
             zone.save()
-
             serializer = ZoneSerializer(zone)                       
 
             return Response(
